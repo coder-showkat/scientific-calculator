@@ -3,6 +3,7 @@ const display_operation = document.getElementById('display-operation');
 const display_result = document.getElementById('display-result');
 const calculator = document.querySelector('.calculator-body');
 
+// some variable
 const POWER = 'POWER(';
 const FACTORIAL = 'FACTORIAL';
 const PERCENT = 'PERCENT';
@@ -16,6 +17,7 @@ let ans = 0;
 
 const operator = ['+', '-', '*', '/'];
 
+// calculator button
 const calculator_button = [
     {
         name : "rad",
