@@ -301,9 +301,13 @@ function buttonEventListener(button) {
             data.formula.push(button.formula, '-1)');
 
         } else if (button.name == 'percent') {
-
+            const symbol = '%';
+            data.operation.push(symbol);
+            data.formula.push(button.formula);
         } else if (button.name == 'factorial') {
-            
+            const symbol = '!';
+            data.operation.push(symbol);
+            data.formula.push(button.formula);
         } else {
             const symbol = button.symbol + '(';
             const formula = button.formula + '(';
@@ -321,7 +325,21 @@ function buttonEventListener(button) {
 
             formula_str = formula_str.replace(toReplace, replacement);
         })
-        
+
+        const PERCENT_SEARCH_RESULT = search(data.formula, PERCENT);
+        const PERCENT_BASES = percentBaseGetter(data.formula, PERCENT_SEARCH_RESULT);
+        PERCENT_BASES.forEach(base => {
+            const toReplace = base + PERCENT;
+            const replacement = '(' + base + '/ 100)';
+            formula_str = formula_str.replace(toReplace, replacement);
+        })
+
+        const FACTORIAL_SEARCH_RESULT = search(data.formula, FACTORIAL);
+        const NUMBERS = factorialNumberGetter(data.formula, FACTORIAL_SEARCH_RESULT);
+        NUMBERS.forEach(number => {
+            formula_str = formula_str.replace(number.toReplace, number.replacement);
+        })
+
         let result;
         try {
             result = eval(formula_str);
@@ -373,7 +391,7 @@ function search(arr, keyword) {
     return result;
 }
 
-//power base getter 
+//power base getter
 function powerBaseGetter(formula, POWER_SEARCH_RESULT) {
     const bases = [];
     
@@ -403,4 +421,124 @@ function powerBaseGetter(formula, POWER_SEARCH_RESULT) {
     })
 
     return bases;
+}
+
+// percent base getter
+function percentBaseGetter(formula, PERCENT_SEARCH_RESULT) {
+    const bases = [];
+    
+    PERCENT_SEARCH_RESULT.forEach(power_index =>{
+        const base = [];
+        let parenthesis_count = 0;
+        let input_index = power_index -1;
+        let isOperator = false;
+        while (input_index >= 0) {
+            if (formula[input_index] == '(') parenthesis_count--;
+            if (formula[input_index] == ')') parenthesis_count++;
+            for (const x of operator) {
+                if (formula[input_index] == x) isOperator = true;
+            }
+            let isPercent = (formula[input_index] == PERCENT);
+
+            if ((isOperator && parenthesis_count == 0) || isPercent) {
+                break;
+            }
+
+            base.unshift(formula[input_index]);
+
+            input_index--;
+        }
+
+        bases.push(base.join(''));
+    })
+
+    return bases;
+}
+
+//factorial number getter
+function factorialNumberGetter(formula, FACTORIAL_SEARCH_RESULT) {
+    const numbers = [];
+    let factorial_sequence = 0;
+    FACTORIAL_SEARCH_RESULT.forEach(factorial_index =>{
+        const number = [];
+        let next_input_index = factorial_index + 1;
+        let next_input = formula[next_input_index];
+        if (next_input == FACTORIAL) {
+            factorial_sequence += 1;
+            return;
+        }
+
+        const first_factorial_index = factorial_index - factorial_sequence;
+        let input_index = first_factorial_index - 1;
+        let isOperator = false;
+
+        while (input_index >= 0) {
+            if (formula[input_index] == '(') parenthesis_count--;
+            if (formula[input_index] == ')') parenthesis_count++;
+            for (const x of operator) {
+                if (formula[input_index] == x) isOperator = true;
+            }
+
+            if (isOperator && parenthesis_count == 0) {
+                break;
+            }
+
+            number.unshift(formula[input_index]);
+
+            input_index--;
+        }
+
+        const number_str = number.join('');
+        const factorial_count = factorial_sequence + 1;
+        const factorial = 'factorial(';
+        const close_parentheses = ')';
+
+        const toReplace = number_str + FACTORIAL.repeat(factorial_count);
+        const replacement = factorial.repeat(factorial_count) + number_str + close_parentheses.repeat(factorial_count);
+        numbers.push({
+            toReplace: toReplace,
+            replacement: replacement
+        })
+
+        factorial_sequence = 0;
+    })
+
+    return numbers;
+}
+
+
+// factorial function
+function factorial(num) {
+    if (num % 1 !== 0) {
+        return gamma(num + 1);
+    } 
+    if (num == 0 || num == 1) {
+        return 1;
+    } else {
+        let total = 1;
+        for (let i = 1; i <= num; i++) {
+            total *= i;
+        }
+        return total;
+    }
+}
+
+
+// gamma function
+function gamma(n) {  // accurate to about 15 decimal places
+    //some magic constants 
+    var g = 7, // g represents the precision desired, p is the values of p[i] to plug into Lanczos' formula
+        p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    if(n < 0.5) {
+      return Math.PI / Math.sin(n * Math.PI) / gamma(1 - n);
+    }
+    else {
+      n--;
+      var x = p[0];
+      for(var i = 1; i < g + 2; i++) {
+        x += p[i] / (n + i);
+      }
+      var t = n + g + 0.5;
+      return Math.sqrt(2 * Math.PI) * Math.pow(t, (n + 0.5)) * Math.exp(-t) * x;
+    }
 }
