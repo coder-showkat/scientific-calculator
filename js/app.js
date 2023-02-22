@@ -297,9 +297,8 @@ function buttonEventListener(button) {
 
         } else if (button.name == 'inverse') {
             const symbol = '^(-1)';
-            const formula = button.formula + '-1)';
             data.operation.push(symbol);
-            data.formula.push(formula);
+            data.formula.push(button.formula, '-1)');
 
         } else if (button.name == 'percent') {
 
@@ -315,8 +314,14 @@ function buttonEventListener(button) {
         let formula_str = data.formula.join('');
 
         const POWER_SEARCH_RESULT = search(data.formula, POWER);
-        console.log(POWER_SEARCH_RESULT);
-        // const BASES = powerBaseGetter()
+        const BASES = powerBaseGetter(data.formula, POWER_SEARCH_RESULT);
+        BASES.forEach(base => {
+            const toReplace = base + POWER;
+            const replacement = 'Math.pow(' + base + ',';
+
+            formula_str = formula_str.replace(toReplace, replacement);
+        })
+        
         let result;
         try {
             result = eval(formula_str);
@@ -366,4 +371,36 @@ function search(arr, keyword) {
     })
 
     return result;
+}
+
+//power base getter 
+function powerBaseGetter(formula, POWER_SEARCH_RESULT) {
+    const bases = [];
+    
+    POWER_SEARCH_RESULT.forEach(power_index =>{
+        const base = [];
+        let parenthesis_count = 0;
+        let input_index = power_index -1;
+        let isOperator = false;
+        while (input_index >= 0) {
+            if (formula[input_index] == '(') parenthesis_count--;
+            if (formula[input_index] == ')') parenthesis_count++;
+            for (const x of operator) {
+                if (formula[input_index] == x) isOperator = true;
+            }
+            let isPower = (formula[input_index] == POWER);
+
+            if ((isOperator && parenthesis_count == 0) || isPower) {
+                break;
+            }
+
+            base.unshift(formula[input_index]);
+
+            input_index--;
+        }
+
+        bases.push(base.join(''));
+    })
+
+    return bases;
 }
