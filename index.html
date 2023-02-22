@@ -10,6 +10,11 @@
     <!-- font-awesome cdn -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 
+    <!-- roboto font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
     <!-- tailwind cdn -->
     <script src="js/tailwind.js"></script>
     <script>
@@ -24,6 +29,10 @@
                         transparent1: 'rgba(255, 255, 255, 0.1)',
                         orange: '#ef7f2f'
                     }
+                },
+
+                fontFamily: {
+                    'roboto': ['Roboto', 'sans-serif']
                 }
             }
         }
@@ -34,7 +43,7 @@
 
 </head>
 
-<body class="bg-black">
+<body class="bg-black flex flex-col justify-between h-[95vh] min-h-[490px] font-roboto">
     <header class="w-screen sm:w-96 mx-auto text-gray-500 p-4 text-lg">
         <div class="flex justify-between items-center">
             <button><i class="fa-solid fa-down-left-and-up-right-to-center"></i></button>
@@ -45,7 +54,7 @@
 
     <main class="w-screen sm:w-96 px-4 mx-auto">
         <input type="text" id="display-operation"
-            class="w-full border-none bg-transparent text-gray-500 text-right block mt-28 font-bold text-2xl p-2 focus:outline-none"
+            class="w-full border-none bg-transparent text-gray-500 text-right block mt-4 font-bold text-2xl p-2 focus:outline-none"
             readonly>
         <input type="text" id="display-result"
             class="w-full border-none bg-transparent text-gray-100 text-right block font-bold text-3xl p-2 focus:outline-none"

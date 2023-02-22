@@ -36,22 +36,16 @@ const calculator_button = [
         type : "trigo_function"
     },
     {
-        name : "cos",
-        symbol : "cos",
-        formula : "trigo(Math.cos,",
-        type : "trigo_function"
+        name : "clear",
+        symbol : "AC",
+        formula : false,
+        type : "key"
     },
     {
-        name : "tan",
-        symbol : "tan",
-        formula : "trigo(Math.tan,",
-        type : "trigo_function"
-    },
-    {
-        name : "power",
-        symbol : `x<sup>y</sup>`,
-        formula : POWER,
-        type : "math_function"
+        name : "delete",
+        symbol : "⌫",
+        formula : false,
+        type : "key"
     },
     {
         name : "log",
@@ -63,6 +57,24 @@ const calculator_button = [
         name : "ln",
         symbol : "ln",
         formula : "Math.log",
+        type : "math_function"
+    },
+    {
+        name : "cos",
+        symbol : "cos",
+        formula : "trigo(Math.cos,",
+        type : "trigo_function"
+    },
+    {
+        name : "power",
+        symbol : `x<sup>y</sup>`,
+        formula : POWER,
+        type : "math_function"
+    },
+    {
+        name : "percent",
+        symbol : "%",
+        formula : PERCENT,
         type : "math_function"
     },
     {
@@ -78,27 +90,15 @@ const calculator_button = [
         type : "number"
     },
     {
+        name : "tan",
+        symbol : "tan",
+        formula : "trigo(Math.tan,",
+        type : "trigo_function"
+    },
+    {
         name : "square-root",
         symbol : "√",
         formula : "Math.sqrt",
-        type : "math_function"
-    },
-    {
-        name : "clear",
-        symbol : "AC",
-        formula : false,
-        type : "key"
-    },
-    {
-        name : "delete",
-        symbol : "⌫",
-        formula : false,
-        type : "key"
-    },
-    {
-        name : "percent",
-        symbol : "%",
-        formula : PERCENT,
         type : "math_function"
     },
     {
@@ -139,7 +139,7 @@ const calculator_button = [
     },
     {
         name : "inverse",
-        symbol : "1/X",
+        symbol : `<sup>1</sup>/<sub>X</sub>`,
         formula : POWER,
         type : "math_function"
     },
@@ -204,6 +204,12 @@ const calculator_button = [
         type : "number"
     },
     {
+        name : "e",
+        symbol : "e",
+        formula : "Math.E",
+        type : "number"
+    },
+    {
         name : "0",
         symbol : 0,
         formula : 0,
@@ -263,12 +269,54 @@ function buttonEventListener(button) {
             data.operation = [];
             data.formula = [];
             display_result.value = '';
-        } else if (button.name = 'delete') {
+        } else if (button.name == 'delete') {
             data.operation.pop();
             data.formula.pop();
+        } else if (button.name == 'rad') {
+            RAD = true;
+            rad_btn.classList.add('active-angle');
+            deg_btn.classList.remove('active-angle');
+            return;
+        } else if (button.name == 'deg') {
+            RAD = false;
+            rad_btn.classList.remove('active-angle');
+            deg_btn.classList.add('active-angle');
+            return;
+        }
+    } else if (button.type == 'trigo_function') {
+        const symbol = button.symbol + '(';
+        const formula = button.formula;
+        data.operation.push(symbol);
+        data.formula.push(formula);
+    } else if (button.type == 'math_function') {
+        if (button.name == 'power') {
+            const symbol = '^(';
+            const formula = button.formula;
+            data.operation.push(symbol);
+            data.formula.push(formula);
+
+        } else if (button.name == 'inverse') {
+            const symbol = '^(-1)';
+            const formula = button.formula + '-1)';
+            data.operation.push(symbol);
+            data.formula.push(formula);
+
+        } else if (button.name == 'percent') {
+
+        } else if (button.name == 'factorial') {
+            
+        } else {
+            const symbol = button.symbol + '(';
+            const formula = button.formula + '(';
+            data.operation.push(symbol);
+            data.formula.push(formula);
         }
     } else if (button.type == 'calculate') {
         let formula_str = data.formula.join('');
+
+        const POWER_SEARCH_RESULT = search(data.formula, POWER);
+        console.log(POWER_SEARCH_RESULT);
+        // const BASES = powerBaseGetter()
         let result;
         try {
             result = eval(formula_str);
@@ -279,13 +327,43 @@ function buttonEventListener(button) {
             }
         }
 
-        display_result.value = result;
-        ans = result;
-        data.operation = [result];
-        data.formula = [result];
+        outputResult(result);
         return;
     }
 
     display_operation.value = data.operation.join('');
 }
 
+// output result
+function outputResult(result) {
+    result = parseFloat(result.toFixed(11));
+    const result_str = String(result);
+    if (result_str.length > 9) {
+        result = result.toExponential(9);
+    }
+    display_result.value = result;
+    ans = result;
+    data.operation = [result];
+    data.formula = [result];
+}
+
+
+// trigo function
+function trigo(callback, angle) {
+    if (!RAD) {
+        angle = angle * Math.PI / 180;
+    }
+    return callback(angle);
+}
+
+// search
+function search(arr, keyword) {
+    const result = [];
+    arr.forEach((elem, index) => {
+        if (elem == keyword) {
+            result.push(index);
+        }
+    })
+
+    return result;
+}
