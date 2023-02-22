@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  #expand,
+  #clear,
+  #delete,
+  #percent,
+  #division,
+  #multiplication,
+  #subtraction,
+  #addition {
+    color: #ef7f2f !important;
+  }
+
+  #calculate {
+    background-color: #ef7f2f !important;
+  }
+
+  .active-angle {
+    color: #ef7f2f !important;
+  }
+}

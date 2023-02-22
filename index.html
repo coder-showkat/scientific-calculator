@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator - SAM</title>
+
+    <!-- font-awesome cdn -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+    <!-- tailwind cdn -->
+    <script src="js/tailwind.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifford: '#da373d',
+                        orange: '#ef7f2f'
+                    },
+                    backgroundColor: {
+                        transparent1: 'rgba(255, 255, 255, 0.1)',
+                        orange: '#ef7f2f'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- custom css -->
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body class="bg-black">
+    <header class="w-screen sm:w-96 mx-auto text-gray-500 p-4 text-lg">
+        <div class="flex justify-between items-center">
+            <button><i class="fa-solid fa-down-left-and-up-right-to-center"></i></button>
+            <button class="bg-orange px-2 py-1 rounded-md text-gray-800"><i class="fa-solid fa-equals"></i></i></button>
+            <button class="text-gray-100"><i class="fa-solid fa-ellipsis-vertical"></i></i></button>
+        </div>
+    </header>
+
+    <main class="w-screen sm:w-96 px-4 mx-auto">
+        <input type="text" id="display-operation"
+            class="w-full border-none bg-transparent text-gray-500 text-right block mt-28 font-bold text-2xl p-2 focus:outline-none"
+            readonly>
+        <input type="text" id="display-result"
+            class="w-full border-none bg-transparent text-gray-100 text-right block font-bold text-3xl p-2 focus:outline-none"
+            placeholder="0" readonly>
+        <hr class="my-2 border-gray-500">
+        <div class="calculator-body py-4 grid grid-cols-1 gap-2 text-2xl font-semibold text-gray-100">
+
+
+
+
+        </div>
+
+    </main>
+
+
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
