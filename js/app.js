@@ -262,8 +262,26 @@ calculator_button.forEach(button => {
 // button event listener
 function buttonEventListener(button) {
     if (button.type == 'number' || button.type == 'operator') {
-        data.operation.push(button.symbol);
-        data.formula.push(button.formula);
+        if (button.name == 'comma') {
+            let number = [];
+            let index = data.operation.length -1;
+            while (index >= 0) {
+                if (!isNaN(data.operation[index]) || data.operation[index] == '.') {
+                    number.unshift(data.operation[index]);
+                } else {
+                    break;
+                }
+
+                index--;
+            }
+            if (number.includes('.') == false) {
+                data.operation.push(button.symbol);
+                data.formula.push(button.formula);           
+            }
+        } else {
+            data.operation.push(button.symbol);
+            data.formula.push(button.formula);
+        }
     } else if (button.type == 'key') {
         if (button.name == 'clear') {
             data.operation = [];
