@@ -240,7 +240,7 @@ calculator_button.forEach(button =>{
     }
 
     const row = calculator.querySelector('.row:last-child');
-    row.innerHTML += `<button class="inline-block w-14 h-14 text-center rounded-full active:bg-transparent1" id="${button.name}">${button.symbol}</button>`
+    row.innerHTML += `<div class="flex justify-center items-center w-14 h-14 text-center rounded-full active:bg-transparent1 active:scale-90 cursor-default" id="${button.name}">${button.symbol}</div>`
     added_btn += 1;
 })
 
@@ -381,8 +381,14 @@ function buttonEventListener(button) {
 function outputResult(result) {
     result = parseFloat(result.toFixed(11));
     const result_str = String(result);
-    if (result_str.length > 9) {
-        result = result.toExponential(9);
+    if (result_str.includes('.')) {
+        if ((result_str.substr(0, result_str.indexOf('.') + 1)).length > 9) {
+            result = result.toExponential(9);
+        }
+    } else {
+        if (result_str.length > 9) {
+            result = result.toExponential(9);
+        }
     }
     display_result.value = result;
     ans = result;
